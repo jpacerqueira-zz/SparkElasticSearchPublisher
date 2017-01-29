@@ -1,0 +1,24 @@
+#!/bin/bash
+
+MAIN_CLASS=ptv.gaming.scv.publishing.elastic.ElasticAggregatorSpark
+APP_JAR=elastic-1.0-SNAPSHOT-jar-with-dependencies.jar
+MASTER_URL=yarn
+NUM_EXECUTORS=2
+DRIVER_MEMORY=1G
+EXECUTOR_MEMORY=1G
+EXECUTOR_CORES=1
+APP_CONF_FILE=later-todo.conf
+
+if [ $# -lt 1 ]
+then
+  DATE_STRING=`date -d "1 day ago" '+%Y%m%d'`
+else
+  DATE_STRING=$1
+fi
+
+# load ES mapping
+sudo bash -x dev-scv-person-mapping ${DATE_STRING}
+
+# submit from client the ES index assets push_pull
+spark-submit --class ${MAIN_CLASS} --master ${MASTER_URL} --num-executors ${NUM_EXECUTORS} --driver-memory ${DRIVER_MEMORY} --executor-memory ${EXECUTOR_MEMORY} --executor-cores ${EXECUTOR_CORES} ${APP_JAR} --app.conf.path ${APP_CONF_FILE} --dthr ${DATE_STRING}
+
