@@ -2,7 +2,7 @@
 #date format: dt=YYYYMMDD
 
 dt=$1
-index_prefix="dev-singlepersonview"
+index_prefix="dev-persondailyview"
 es_type="person"
 es_node="localhost"
  
