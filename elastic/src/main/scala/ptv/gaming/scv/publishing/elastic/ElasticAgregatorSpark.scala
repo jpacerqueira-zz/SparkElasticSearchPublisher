@@ -127,7 +127,7 @@ object ElasticAggregatorSpark extends App {
   .saveToEs(esIndexType).asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
 
   // Works with JavaRDD context 
-  EsSpark.saveToEs(saveCurltoEs.toJavaRDD,esIndexType) //.asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
+  EsSpark.saveToEs(saveCurltoEs.toJavaRDD(),esIndexType) //.asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
 
   dailyPerson.unpersist()
 
