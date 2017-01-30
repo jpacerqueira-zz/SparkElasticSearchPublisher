@@ -119,15 +119,15 @@ object ElasticAggregatorSpark extends App {
       .write.mode("overwrite").parquet(s"${dataPublishedGigyaPath}")
 
 
-   val saveCurltoEs = sqlContext.read.parquet(s"${dataPublishedPersonPath}")
-     .repartition(numRepartition).toJavaRDD.persist(StorageLevel.MEMORY_AND_DISK_2)
+   val persistCurltoEs = sqlContext.read.parquet(s"${dataPublishedPersonPath}")
+     .repartition(numRepartition).toJavaRDD().persist(StorageLevel.MEMORY_AND_DISK_2)
 
   // Save to Elastic Search work only in elasticsearch sql context
   val saveCurltoEs = sqlContext.read.parquet(s"${dataPublishedPersonPath}").repartition(numRepartition).toDf().asInstanceOf[org.elasticseach.spark.sql.SparkDataFrame].
   .saveToEs(esIndexType).asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
 
   // Works with JavaRDD context 
-  EsSpark.saveToEs(saveCurltoEs.toJavaRDD(),esIndexType) //.asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
+  EsSpark.saveToEs(persistCurltoEs,esIndexType) //.asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
 
   dailyPerson.unpersist()
 
