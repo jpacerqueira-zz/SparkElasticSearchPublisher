@@ -1,18 +1,10 @@
 package ptv.gaming.scv.publishing.elastic
 
-import com.cloudera.org.joda.time.DateTimeZone
-import com.databricks.spark.avro._
 import org.apache.spark.sql.functions._
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 import org.elasticsearch.spark.sql._
-import org.elasticsearch.spark._
-import org.elasticsearch.spark.rdd.EsSpark
-
-import org.apache.spark.launcher.SparkLauncher
-import org.joda.time.Period
-import org.joda.time.format.DateTimeFormat
 
 import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
@@ -26,15 +18,9 @@ import org.slf4j.LoggerFactory
 object ElasticAggregatorSpark extends App {
   val log = LoggerFactory.getLogger(this.getClass.getName)
 
-  val esNodes="localhost"
-  val esIndexStage="dev-"
-  val esIndexName="persondailyview"
-  val esType="person"
-
   // Yesterday
   val yesterday= DateTime.now().minusDays(1)
 
-  // DateTimeFormat.forPattern(dtFormat).withZone(DateTimeZone.forID(timezone))
   val eventLogDate = yesterday
 
   println("eventLogDate="+eventLogDate)
@@ -47,8 +33,6 @@ object ElasticAggregatorSpark extends App {
 
   println("eventDate="+eventDate)
 
-  val esIndexType = s"${esIndexStage}${esIndexName}-${eventIdDate}/${esType}"
-
 
   // Number partitions in Output
   val numRepartition = 5
@@ -60,76 +44,68 @@ object ElasticAggregatorSpark extends App {
 
   val sparkConfig = new SparkConf().setAppName("Gaming SCV - Aggregator ")
     .set("spark.hadoop.validateOutputSpecs", "false")
-    .set("spark.default.parallelism", "100")
-    .set("es.index.auto.create", "true")
-    .set("es.resource", esIndexType)
-    .set("es.nodes", esNodes)
-    .set("es.nodes.discovery", "true")
     //.setMaster(cluster)
 
   val sparkContext = new SparkContext(sparkConfig)
   val sqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
+
   import sqlContext.implicits._
+
+  // Define an udf
+  val dateToStr = udf(utils.defaultFormateDateTime)
 
   log.info(s"Processing Single Customer Viewing : Person Logs calculation and Loading  ${eventLogDate}")
 
 
-  val dataRawPerson = "/data/raw/person/daily/dt="+eventDate
-  val dataStagedPerson = "/data/staged/person/daily/dt="+eventDate
-  val dataPublishedPerson = "/data/published/person/daily/dt="+eventDate
+  val dataRawGigya = "/data/raw/gaming/gigya/dt="+eventDate
+  val dataStagedGigya = "/data/staged/gaming/gigya/person/dt="+eventDate
+  val dataPublishedGigya = "/data/published/gaming/gigya/person/dt="+eventDate
 
   println("cluster="+cluster)
 
-  //val dataRawPersonPath:String = if (!(cluster.equals("local")))  dataRawPerson else "~"+dataRawPerson
-  //val dataStagedPathPath:String = if (!(cluster.equals("local"))) dataStagedPerson else "~"+dataStagedPerson
-  //val dataPublishedPersonPath:String = if (!(cluster.equals("local"))) dataPublishedPerson else "~"+dataStagedPerson
+  //val dataRawGigyaPath:String = if (!(cluster.equals("local")))  dataRawGigya else "~"+dataRawGigya
+  //val dataStagedGigyaPath:String = if (!(cluster.equals("local"))) dataStagedGigya else "~"+dataStagedGigya
+  //val dataPublishedGigyaPath:String = if (!(cluster.equals("local"))) dataPublishedGigya else "~"+dataStagedGigya
 
-  val dataRawPersonPath = dataRawPerson
-  val dataStagedPersonPath = dataStagedPerson
-  val dataPublishedPersonPath = dataPublishedPerson
+  val dataRawGigyaPath = dataRawGigya
+  val dataStagedGigyaPath = dataStagedGigya
+  val dataPublishedGigyaPath = dataPublishedGigya
 
-  println("input="+dataRawPersonPath)
+  println("input="+dataRawGigyaPath)
 
-  val mastyesterdayPersonDF :DataFrame = sqlContext.read.json(s"${dataRawPersonPath}/*").toDF()
+  val mastyesterdayGigyaDF :DataFrame = sqlContext.read.json(s"${dataRawGigyaPath}/*").toDF()
 
-  mastyesterdayPersonDF.printSchema()
+  mastyesterdayGigyaDF.printSchema()
 
-  val dailyPerson = mastyesterdayPersonDF
+  val dailyGigya = mastyesterdayGigyaDF
     .filter("dt IS NOT NULL")
       .filter("results IS NOT NULL")
-      .select(explode(col("results")).as("person"))
-    .persist(StorageLevel.MEMORY_AND_DISK)
+      .select(explode(col("results")).as("gigya"))
+      .filter("gigya.UID IS NOT NULL")
+    .persist(newLevel=StorageLevel.MEMORY_AND_DISK_2)
 
-  dailyPerson.printSchema()
+  dailyGigya.printSchema()
 
-  val totalData = dailyPerson.count()
-  println(s" DAILY Persons - TOTAL RECORDS : ${totalData}")
+  val totalData = dailyGigya.count()
+  println(s" DAILY GiGYA - TOTAL RECORDS : ${totalData}")
 
   // save Daily results in paquet format
-  dailyPerson.repartition(numRepartition).write.mode("overwrite").parquet(s"${dataStagedPersonPath}")
+  val dailyGigyaSave = dailyGigya.repartition(numRepartition).write.mode("overwrite").parquet(s"${dataStagedGigyaPath}")
 
   // ElasticSearch spark.sql.Df cached with 5 partitions
-  val dailyPersonInEs = sqlContext.read.parquet(s"${dataStagedPersonPath}").repartition(numRepartition).cache()
+  val dailyPersonGigyaInEs = sqlContext.read.parquet(s"${dataStagedGigyaPath}")
+      .repartition(numRepartition).persist(newLevel=StorageLevel.MEMORY_AND_DISK_2)
 
-  dailyPersonInEs.printSchema()
+  dailyPersonGigyaInEs.printSchema()
+
+  val totalData2 = dailyPersonGigyaInEs.count()
+  println(s" DAILY Stage GiGYA - TOTAL RECORDS : ${totalData2}")
 
   // ElasticSearch Library functional need to be cast asInstanceOf[org.elasticseach.spark.sql.SparkDataFrame]
-  dailyPersonInEs
-      .select('person("UID") as 'PERSON_UID, 'person("createdTimestamp") as 'CREATED_DATE, 'person("lastLogin") as 'LAST_LOGIN_DATE, 'person("socialProviders") as 'SOCIAL_PROVIDER)
-      .write.mode("overwrite").parquet(s"${dataPublishedGigyaPath}")
-
-
-   val saveCurltoEs = sqlContext.read.parquet(s"${dataPublishedPersonPath}")
-     .repartition(numRepartition).toJavaRDD.persist(StorageLevel.MEMORY_AND_DISK_2)
-
-  // Save to Elastic Search work only in elasticsearch sql context
-  val saveCurltoEs = sqlContext.read.parquet(s"${dataPublishedPersonPath}").repartition(numRepartition).toDf().asInstanceOf[org.elasticseach.spark.sql.SparkDataFrame].
-  .saveToEs(esIndexType).asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
-
-  // Works with JavaRDD context 
-  EsSpark.saveToEs(saveCurltoEs.toJavaRDD(),esIndexType) //.asInstanceOf[org.apache.spark.sql.DataFrame => org.elasticsearch.spark.sql.SparkDataFrameFunctions]
-
-  dailyPerson.unpersist()
+  val dailyPersonGigyaInSave = dailyPersonGigyaInEs
+      .select('gigya("UID") as 'GIGYA_UID, 'gigya("created") as 'CREATED_DATE, 'gigya("lastLoginTimestamp") as 'LAST_LOGIN_TIMESTAMP, 'gigya("socialProviders") as 'SOCIAL_PROVIDER)
+    .withColumn("LAST_LOGIN_DATE",dateToStr(col("LAST_LOGIN_TIMESTAMP")))
+    .write.mode("overwrite").parquet(s"${dataPublishedGigyaPath}")
 
   sparkContext.stop()
 

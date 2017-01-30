@@ -22,7 +22,7 @@
             <snappy-java.version>1.0.5.4</snappy-java.version>
             <scalatest.version>2.2.4</scalatest.version>
             <maven-scala-plugin.version>2.15.2</maven-scala-plugin.version>
-            <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
+	        <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
             <avro.version>1.7.7</avro.version>
             <guava.version>16.0</guava.version>
             <snappy-java.version>1.0.5.4</snappy-java.version>

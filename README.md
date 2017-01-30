@@ -9,8 +9,8 @@
    Publication of dat with org.elasticsearch.spark.sql
 
  TODO :
-  - Split Jobs into /raw /stage /pubished :: data jobs
-  - New App required to publish in elastic seach only totals from published
-  - New Elastic Seach should APPs must only run in elasticsearch.sql context
+  - Split Jobs into /raw /stage /pubished :: data jobs - pending
+  - New App required to publish in elastic seach only totals from published - Done
+  - New Elastic Seach APPs must only run in elasticsearch.sql context - Done
 
  
