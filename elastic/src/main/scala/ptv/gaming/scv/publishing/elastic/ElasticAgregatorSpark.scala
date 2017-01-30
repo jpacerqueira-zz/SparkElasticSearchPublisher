@@ -98,6 +98,7 @@ object ElasticAggregatorSpark extends App {
     .filter("dt IS NOT NULL")
       .filter("results IS NOT NULL")
       .select(explode(col("results")).as("person"))
+      .filter("person.UID IS NOT NULL")
     .persist(StorageLevel.MEMORY_AND_DISK)
 
   dailyPerson.printSchema()
