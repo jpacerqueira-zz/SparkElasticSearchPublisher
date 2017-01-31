@@ -4,16 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ptv.gaming.scv.publishing</groupId>
+    <groupId>com.jpac.scv.publishing</groupId>
     <artifactId>elastic</artifactId>
     <version>1.0-SNAPSHOT</version>
 
 
     <properties>
             <scala.version>2.10.6</scala.version>
-            <hadoop-client.version>2.6.0-cdh5.8.0</hadoop-client.version>
-            <spark-core.version>1.6.0-cdh5.8.0</spark-core.version>
-            <spark-sql.version>1.6.0-cdh5.8.0</spark-sql.version>
+            <hadoop-client.version>2.6.0-cdh5.9.0</hadoop-client.version>
+            <spark-core.version>1.6.0-cdh5.9.0</spark-core.version>
+            <spark-sql.version>1.6.0-cdh5.9.0</spark-sql.version>
             <scaling-args.version>0.15.0</scaling-args.version>
             <elasticsearch-spark.version>2.4.4</elasticsearch-spark.version>
             <elasticsearch-hadoop>2.4.4</elasticsearch-hadoop>
@@ -28,8 +28,8 @@
             <snappy-java.version>1.0.5.4</snappy-java.version>
             <spark-avro.version>1.7.6</spark-avro.version>
             <junit.version>4.12</junit.version>
-            <hadoop-hdfs.version>2.6.0-cdh5.8.0</hadoop-hdfs.version>
-            <hadoop-common.version>2.6.0-cdh5.8.0</hadoop-common.version>
+            <hadoop-hdfs.version>2.6.0-cdh5.9.0</hadoop-hdfs.version>
+            <hadoop-common.version>2.6.0-cdh5.9.0</hadoop-common.version>
             <spock.version>1.0-groovy-2.4</spock.version>
             <groovy.all.version>2.4.3</groovy.all.version>
             <gmaven.version>1.5</gmaven.version>
@@ -37,8 +37,8 @@
             <log4j.version>1.2.17</log4j.version>
             <commons-cli.version>1.2</commons-cli.version>
             <cglib.version>3.2.4</cglib.version>
-            <hadoop-minicluster.version>2.6.0-cdh5.8.0</hadoop-minicluster.version>
-            <oozie.version>4.1.0-cdh5.8.0</oozie.version>
+            <hadoop-minicluster.version>2.6.0-cdh5.9.0</hadoop-minicluster.version>
+            <oozie.version>4.1.0-cdh5.9.0</oozie.version>
     </properties>
 
     <repositories>
@@ -198,7 +198,7 @@
             <dependency>
                 <groupId>com.databricks</groupId>
                 <artifactId>spark-avro_2.10</artifactId>
-                <version>1.1.0-cdh5.8.0</version>
+                <version>1.1.0-cdh5.9.0</version>
             </dependency>
 
             <dependency>
@@ -356,11 +356,5 @@
                 </plugin>
             </plugins>
     </build>
-
-    <scm>
-            <connection>scm:git:ssh://git@stash.performgroup.com/bda/gaming-scv.git</connection>
-            <developerConnection>scm:git:ssh://git@stash.performgroup.com/bda/gaming-scv.git</developerConnection>
-            <url>https://stash.performgroup.com/projects/BDA/repos/gaming-scv/browse</url>
-    </scm>
 
 </project>

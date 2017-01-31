@@ -1,4 +1,4 @@
-package ptv.gaming.scv.publishing.elastic
+package com.jpac.scv.publishing.elastic
 
 import org.apache.spark.sql.functions._
 import org.apache.spark.storage.StorageLevel

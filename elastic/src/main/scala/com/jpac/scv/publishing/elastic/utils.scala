@@ -1,7 +1,7 @@
-package ptv.gaming.scv.publishing.elastic.utils
+package com.jpac.scv.publishing.elastic
 
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import org.joda.time.{DateTime, DateTimeZone}
-import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 
 /**
   * Created by joao.cerqueira on 24/01/2017.
@@ -20,7 +20,6 @@ object utils {
       dataItem.length < 1 || dataItem.toLowerCase.contains("null")) "(unknown)" else dataItem
     dataOut
   }
-
 
   val nullValueToMinus: (String => Int) = (dataItem: String) => {
     val dataOut = try {

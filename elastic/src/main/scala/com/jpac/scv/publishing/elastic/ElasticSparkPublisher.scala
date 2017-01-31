@@ -1,4 +1,4 @@
-package ptv.gaming.scv.publishing.elastic
+package com.jpac.scv.publishing.elastic
 
 import com.cloudera.org.joda.time.DateTimeZone
 import org.apache.spark.sql.functions._
