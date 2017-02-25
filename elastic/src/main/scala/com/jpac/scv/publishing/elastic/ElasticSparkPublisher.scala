@@ -68,7 +68,7 @@ object ElasticSparkPublisher extends App {
 
   log.info(s"Processing Published Single Person of Gigya as ElasticSearch index  ${eventLogDate}")
 
-  val dataPublishedGigya = "/data/published/gfans/gigya/person/dt="+eventDate
+  val dataPublishedGigya = "/data/published/gfans/person/dt="+eventDate
 
   println("cluster="+cluster)
 
