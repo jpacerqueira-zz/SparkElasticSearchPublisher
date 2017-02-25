@@ -2,11 +2,9 @@
 #date format: dt=YYYYMMDD
 
 dt=$1
-index_prefix="dev-singlecustomerview"
-#index_prefix="singlecustomerview" //PROD
+index_prefix="dev-gfansview"
 es_type="person"
 es_node="localhost" #"localhost"
-#es_node="exsbg-report01.stage.ix.perform.local" //STAGE
 
 echo "create base http://"${es_node}":9200/${index_prefix}/ WARNING! Daily Indexes Deleted"
 echo "try curl -XDETELE http://"${es_node}":9200/${index_prefix}/"
