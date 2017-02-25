@@ -57,9 +57,9 @@ object ElasticAggregatorSpark extends App {
   log.info(s"Processing Single Customer Viewing : Person Logs calculation and Loading  ${eventLogDate}")
 
 
-  val dataRawGigya = "/data/raw/gaming/gigya/dt="+eventDate
-  val dataStagedGigya = "/data/staged/gaming/gigya/person/dt="+eventDate
-  val dataPublishedGigya = "/data/published/gaming/gigya/person/dt="+eventDate
+  val dataRawGigya = "/data/raw/gfans/person/dt="+eventDate
+  val dataStagedGigya = "/data/staged/gfans/person/dt="+eventDate
+  val dataPublishedGigya = "/data/published/gfans/person/dt="+eventDate
 
   println("cluster="+cluster)
 
