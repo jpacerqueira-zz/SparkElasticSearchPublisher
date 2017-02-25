@@ -20,7 +20,7 @@ object ElasticSparkPublisher extends App {
 
   val esNodes="localhost"
   val esIndexStage="dev-"
-  val esIndexName="singlecustomerview"
+  val esIndexName="gfansview"
   val esType="person"
 
   // Yesterday
