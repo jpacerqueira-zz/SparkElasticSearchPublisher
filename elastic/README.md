@@ -7,9 +7,9 @@
   
 
 - hdfs paths :
-    /data/raw/fgans/perform/dt=0
-    /data/staged/fgans/perform/dt=0
-    /data/published/fgans/perform/dt=0
+  -  /data/raw/fgans/perform/dt=yyyymmdd
+  -  /data/staged/fgans/perform/dt=yyyymmdd
+  -  /data/published/fgans/perform/dt=yyyymmdd
  
   
 - SparkElasticAggregator ::
