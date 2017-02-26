@@ -1,14 +1,14 @@
 
- GFANS Propotype
+ GFANS Prototype
  
   SparkElasticAggregator ::
-   Extracts, flattens and transforms into indexable published
-   
+   Extracts, flattens and transforms json data
+   To indexable published parquet files
+   hdfs paths :
     /data/raw/fgans/perform/dt=0
     /data/staged/fgans/perform/dt=0
     /data/published/fgans/perform/dt=0
  
   SparkElasticAggregator ::
-   Reads Published and curls into ElasticSearch.
-  
+   Reads from published and post into ElasticSearch daily index
 . 
