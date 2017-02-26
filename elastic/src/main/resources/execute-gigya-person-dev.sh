@@ -1,7 +1,7 @@
 #!/bin/bash
 
-MAIN_CLASS1=ptv.gaming.scv.publishing.elastic.ElasticAggregatorSpark
-MAIN_CLASS2=ptv.gaming.scv.publishing.elastic.ElasticSparkPublisher
+MAIN_CLASS1=com.jpac.scv.publishing.elastic.ElasticAggregatorSpark
+MAIN_CLASS2=com.jpac.scv.publishing.elastic.ElasticSparkPublisher
 APP_JAR=elastic-1.0-SNAPSHOT-jar-with-dependencies.jar
 MASTER_URL=yarn
 NUM_EXECUTORS=2
@@ -19,11 +19,13 @@ else
 fi
 
 # Clean hdfs results to avoid issues with mappings while job computes
-hdfs dfs -mkdir -p /data/gfans/gfans/person/dt=0
+hdfs dfs -mkdir -p /data/raw/gfans/gfans/person/dt=0
 hdfs dfs -mkdir -p /data/staged/gfans/person/dt=0
 hdfs dfs -mkdir -p /data/published/gfans/person/dt=0
 
-hdfs dfs -copyFromLocal person_gfans_clean.json /data/staged/gfans/person/dt=${DATE_HDFS}
+# Copy local empty test File
+hdfs dfs -mkdir -p /data/raw/gfans/person/dt=${DATE_HDFS}
+hdfs dfs -copyFromLocal person_gfans_clean.json /data/raw/gfans/person/dt=${DATE_HDFS}
 
 # Clean hdfs results to avoid issues with mappings while job computes
 hdfs dfs -rm -skipTrash -f /data/staged/gfans/person/dt=${DATE_HDFS}/*
@@ -34,7 +36,7 @@ spark-submit --class ${MAIN_CLASS1} --master ${MASTER_URL} --num-executors ${NUM
 
 
 # load ES mapping
-# sudo bash -x dev-scv-person-mapping.sh ${DATE_STRING}
+sudo bash -x dev-scv-person-mapping.sh ${DATE_STRING}
 
 # submit from client to build the daily ES index person 
-# spark-submit --class ${MAIN_CLASS2} --master ${MASTER_URL} --num-executors ${NUM_EXECUTORS} --driver-memory ${DRIVER_MEMORY} --executor-memory ${EXECUTOR_MEMORY} --executor-cores ${EXECUTOR_CORES} ${APP_JAR} --app.conf.path ${APP_CONF_FILE} --dthr ${DATE_STRING}
+spark-submit --class ${MAIN_CLASS2} --master ${MASTER_URL} --num-executors ${NUM_EXECUTORS} --driver-memory ${DRIVER_MEMORY} --executor-memory ${EXECUTOR_MEMORY} --executor-cores ${EXECUTOR_CORES} ${APP_JAR} --app.conf.path ${APP_CONF_FILE} --dthr ${DATE_STRING}
