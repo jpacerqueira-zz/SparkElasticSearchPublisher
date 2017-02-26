@@ -12,6 +12,9 @@ curl -XDELETE 'http://'${es_node}':9200/'${index_prefix}'/' || true
 echo "try curl -XPUT http://'${es_node}':9200/'${index_prefix}'/'"
 curl -XPUT 'http://'${es_node}':9200'/${index_prefix}'/' || true
 #date format: dt=YYYYMMDD
+# Delete data of daily index
+curl -XDELETE 'http://'${es_node}':9200/'${index_prefix}'-'${dt}/es_type  || true
+# Delete daily index 
 curl -XDELETE 'http://'${es_node}':9200/'${index_prefix}'-'${dt}  || true
 curl -XPUT 'http://'${es_node}':9200/'${index_prefix}'-'${dt} || true
 #curl -XPUT 'http://'${es_node}':9200/'${index_prefix}'-'${dt}'/_mapping/'${es_type} -d @${es_type}'-mapping.json' || true
