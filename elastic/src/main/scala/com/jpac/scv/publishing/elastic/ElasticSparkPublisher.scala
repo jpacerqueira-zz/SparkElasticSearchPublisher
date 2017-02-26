@@ -50,7 +50,7 @@ object ElasticSparkPublisher extends App {
      val cluster = "yarn-client" // -> package
   // val cluster = "master" // -> Ozzie
 
-  val sparkConfig = new SparkConf().setAppName("Gaming SCV - Aggregator ")
+  val sparkConfig = new SparkConf().setAppName("Gaming SCV - SparkPublisher v1.0")
     .set("spark.hadoop.validateOutputSpecs", "false")
     .set("es.index.auto.create", "true")
     .set("es.resource", esIndexType)

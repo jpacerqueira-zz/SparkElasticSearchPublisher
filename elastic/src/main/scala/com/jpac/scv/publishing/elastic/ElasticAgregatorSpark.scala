@@ -42,7 +42,7 @@ object ElasticAggregatorSpark extends App {
      val cluster = "yarn-client" // -> package
   // val cluster = "master" // -> Ozzie
 
-  val sparkConfig = new SparkConf().setAppName("Gaming SCV - Aggregator ")
+  val sparkConfig = new SparkConf().setAppName("Gaming SCV - AggregatorSpark v1.0 ")
     .set("spark.hadoop.validateOutputSpecs", "false")
     //.setMaster(cluster)
 
