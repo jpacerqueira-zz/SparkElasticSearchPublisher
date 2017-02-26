@@ -19,7 +19,7 @@ curl -XPUT 'http://'${es_node}':9200/'${index_prefix}'-'${dt}'/_mapping/'${es_ty
 {
     "person": {
         "properties": {
-            "UID_GIGYA":{"type":"string", "null_value": "null"},
+            "GIGYA_UID":{"type":"string", "null_value": "null"},
             "CREATED_DATE":{"type":"string", "null_value": "null"},
             "LAST_LOGIN_TIMESTAMP":{"type":"long", "null_value": -1},
             "LAST_LOGIN_DATE":{"type":"date", "format": "yyyy-MM-dd HH:mm:ss || dateOptionalTime"},
