@@ -2,8 +2,8 @@
  GFANS Prototype
  
 - SparkElasticAggregator ::
-   Extracts, flattens and transforms json data
-   To indexable published parquet files
+   Extracts, flattens and transforms and publishes json data
+   as parquet files for spark
   
 
 - hdfs paths :
