@@ -39,6 +39,7 @@
             <cglib.version>3.2.4</cglib.version>
             <hadoop-minicluster.version>2.6.0-cdh5.9.0</hadoop-minicluster.version>
             <oozie.version>4.1.0-cdh5.9.0</oozie.version>
+            <scopt.version>3.5.0</scopt.version>
     </properties>
 
     <repositories>
@@ -106,13 +107,11 @@
                 <artifactId>scala-library</artifactId>
                 <version>${scala.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.spark</groupId>
                 <artifactId>spark-core_2.10</artifactId>
                 <version>${spark-core.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
@@ -123,7 +122,6 @@
                 <artifactId>elasticsearch-hadoop</artifactId>
                 <version>${elasticsearch-hadoop}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-client</artifactId>
@@ -141,7 +139,6 @@
                 <version>${scalatest.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
@@ -194,20 +191,22 @@
                 <artifactId>spark-sql_2.10</artifactId>
                 <version>${spark-sql.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.databricks</groupId>
                 <artifactId>spark-avro_2.10</artifactId>
                 <version>1.1.0-cdh5.9.0</version>
             </dependency>
-
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
-
+            <dependency>
+                <groupId>com.github.scopt</groupId>
+                <artifactId>scopt_2.10</artifactId>
+                <version>${scopt.version}</version>
+            </dependency>
     </dependencies>
 
     <build>

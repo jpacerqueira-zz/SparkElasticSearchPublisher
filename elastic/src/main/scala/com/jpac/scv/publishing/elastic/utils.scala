@@ -85,11 +85,11 @@ object utils {
     }
   }
 
-  val stringTODateLong: (String => Long) = (timestamp: String) => {
+  val stringTODateLong: ((String,String) => Long) = (timestamp: String, format: String) => {
 
     try{
       val inputDate=timestamp.split(" ")
-      val incomingFormat = new java.text.SimpleDateFormat("dd-MMM-yyyy")
+      val incomingFormat = new java.text.SimpleDateFormat(format)
       val outgoingFormat = new java.text.SimpleDateFormat("yyyyMMdd")
       val outdate = outgoingFormat.format(incomingFormat.parse(inputDate(0)))
       DateTimeFormat.forPattern("yyyyMMdd").parseDateTime(outdate).getMillis()

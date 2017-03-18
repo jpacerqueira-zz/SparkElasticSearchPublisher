@@ -1,14 +1,14 @@
 package com.jpac.scv.publishing.elastic
 
 import com.cloudera.org.joda.time.DateTimeZone
+import com.jpac.scv.publishing.elastic.parameters._
+import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext}
 import org.elasticsearch.spark.sql._
-
 import org.joda.time.{DateTime, DateTimeZone}
-import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
-
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import org.slf4j.LoggerFactory
 
 /**
@@ -16,73 +16,74 @@ import org.slf4j.LoggerFactory
   *
   **/
 object ElasticSparkPublisher extends App {
+
   val log = LoggerFactory.getLogger(this.getClass.getName)
 
-  val esNodes="localhost"
-  val esIndexStage="dev-"
-  val esIndexName="gfansview"
-  val esType="person"
+  override def main(args: Array[String]) {
 
-  // Yesterday
-  val yesterday= DateTime.now().minusDays(1)
+    val inputArgs = ParamDateHdfs(args) match {
+      case Some(x) => x
+      case _ => throw new IllegalArgumentException("Wrong input parameters")
+    }
 
-  // DateTimeFormat.forPattern(dtFormat).withZone(DateTimeZone.forID(timezone))
-  val eventLogDate = yesterday
+    val esNodes = "localhost"
+    val esIndexStage = "dev-"
+    val esIndexName = "gfansview"
+    val esType = "person"
 
-  println("eventLogDate="+eventLogDate)
+    // Yesterday
+    val yesterday = DateTime.now().minusDays(1)
 
-  val eventFormatDate1 = DateTimeFormat.forPattern("yyyyMMdd")
-  val eventFormatDate2 = DateTimeFormat.forPattern("yyyy-MM-dd")
+    val eventLogDate = if (inputArgs.dthr.length < 10) yesterday else utils.stringTODateLong(inputArgs.dthr,"yyyy-MM-dd")
 
-  val eventIdDate = eventLogDate.toDateTime().toString(eventFormatDate1)
-  val eventDate = eventLogDate.toDateTime().toString(eventFormatDate2)
+    println("eventLogDate=" + eventLogDate)
 
-  println("eventDate="+eventDate)
+    val eventFormatDate1 = DateTimeFormat.forPattern("yyyyMMdd")
+    val eventFormatDate2 = DateTimeFormat.forPattern("yyyy-MM-dd")
 
-  val esIndexType = s"${esIndexStage}${esIndexName}-${eventIdDate}/${esType}"
+    val eventIdDate = eventLogDate.asInstanceOf[DateTime].toDateTime().toString(eventFormatDate1)
+    val eventDate = eventLogDate.asInstanceOf[DateTime].toDateTime().toString(eventFormatDate2)
 
+    println("eventDate=" + eventDate)
 
-  // Number partitions in Output
-  val numRepartition = 5
+    val esIndexType = s"${esIndexStage}${esIndexName}-${eventIdDate}/${esType}"
 
-  // Cluster mAster types
-  // val cluster = "local" // -> Laptop
-     val cluster = "yarn-client" // -> package
-  // val cluster = "master" // -> Ozzie
+    val sparkConfig = new SparkConf().setAppName("Gaming SCV - SparkPublisher v1.0")
+      .set("spark.hadoop.validateOutputSpecs", "false")
+      .set("es.index.auto.create", "true")
+      .set("es.resource", esIndexType)
+      .set("es.nodes", esNodes)
+      .set("es.nodes.discovery", "true")
 
-  val sparkConfig = new SparkConf().setAppName("Gaming SCV - SparkPublisher v1.0")
-    .set("spark.hadoop.validateOutputSpecs", "false")
-    .set("es.index.auto.create", "true")
-    .set("es.resource", esIndexType)
-    .set("es.nodes", esNodes)
-    .set("es.nodes.discovery", "true")
-    //.setMaster(cluster)
+    val sparkContext = new SparkContext(sparkConfig)
+    val sqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
 
-  val sparkContext = new SparkContext(sparkConfig)
-  val sqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
+    executionRawStagedJob(sparkContext, sqlContext, esIndexType, eventDate, 5)
 
-  import sqlContext.implicits._
+    sparkContext.stop()
+  }
 
-  // Define an udf
-  val dateToStr = udf(utils.defaultFormateDateTime)
-
-  log.info(s"Processing Published Single Person of Gigya as ElasticSearch index  ${eventLogDate}")
-
-  val dataPublishedGigya = "/data/published/gfans/person/dt="+eventDate
-
-  println("cluster="+cluster)
-
-  val dataPublishedGigyaPath = dataPublishedGigya
+  def executionRawStagedJob(sparkContext: SparkContext, sqlContext: SQLContext, esIndexType: String,  eventDate: String, inputRepartition: Int): Unit = {
 
 
-  val persistCurltoEs = sqlContext.read.parquet(s"${dataPublishedGigyaPath}")
-    .persist(newLevel=StorageLevel.MEMORY_AND_DISK_2)
-  
-  persistCurltoEs.printSchema()
+    // Number partitions in Output
+    val numRepartition = 5
 
-  // Save to Elastic Search work only in elasticsearch sql context
-  persistCurltoEs.repartition(numRepartition).saveToEs(esIndexType)
+    log.info(s"Processing Published Single Person of Gigya as ElasticSearch index  ${eventDate}")
 
-  sparkContext.stop()
+    val dataPublishedGigya = "/data/published/gfans/person/dt=" + eventDate
+
+    val dataPublishedGigyaPath = dataPublishedGigya
+
+
+    val persistCurltoEs = sqlContext.read.parquet(s"${dataPublishedGigyaPath}")
+      .persist(newLevel = StorageLevel.MEMORY_AND_DISK_2)
+
+    persistCurltoEs.printSchema()
+
+    // Save to Elastic Search work only in elasticsearch sql context
+    persistCurltoEs.repartition(numRepartition).saveToEs(esIndexType)
+
+  }
 
 }
