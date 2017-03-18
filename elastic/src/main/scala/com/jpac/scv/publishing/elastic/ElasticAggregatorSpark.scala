@@ -32,19 +32,17 @@ object ElasticAggregatorSpark extends App {
     val sparkContext = new SparkContext(sparkConfig)
     val sqlContext = new org.apache.spark.sql.SQLContext(sparkContext)
 
-    log.info(s"Processing input Date  ${inputDate.dthr}")
-
-    executionRawStagedJob(sparkContext, sqlContext, inputDate.dthr, 5)
+    executionRawStagedJob(sparkContext, sqlContext, inputDate, 5)
 
     sparkContext.stop()
   }
 
-  def executionRawStagedJob(sparkContext: SparkContext, sqlContext: SQLContext, dthr: String, inputRepartition: Int): Unit = {
+  def executionRawStagedJob(sparkContext: SparkContext, sqlContext: SQLContext, inputDate: ParamDateHdfs, inputRepartition: Int): Unit = {
 
     // Yesterday
     val yesterday = DateTime.now().minusDays(1)
 
-    val eventLogDate = if (dthr.length < 10) yesterday else utils.stringTODateLong(dthr,"yyyy-MM-dd")
+    val eventLogDate = if (inputDate.dthr.length < 10) yesterday else utils.stringTODateLong(inputDate.dthr,"yyyy-MM-dd")
 
     println("eventLogDate=" + eventLogDate)
 
@@ -99,7 +97,7 @@ object ElasticAggregatorSpark extends App {
     val totalData2 = dailyPersonGigyaInEs.count()
     println(s" DAILY Stage GiGYA - TOTAL RECORDS : ${totalData2}")
 
-    // ElasticSearch Library functionality need to be cast asInstanceOf[org.elasticseach.spark.sql.SparkDataFrame]
+    // Persist Data as Parquet quicker to deep search for next Job
     val dailyPersonGigyaInSave = dailyPersonGigyaInEs
       .select('gigya ("UID") as 'GIGYA_UID, 'gigya ("created") as 'CREATED_DATE, 'gigya ("lastLoginTimestamp") as 'LAST_LOGIN_TIMESTAMP, 'gigya ("socialProviders") as 'SOCIAL_PROVIDER)
       .withColumn("LAST_LOGIN_DATE", dateToStr(col("LAST_LOGIN_TIMESTAMP")))

@@ -65,23 +65,20 @@ object ElasticSparkPublisher extends App {
 
   def executionRawStagedJob(sparkContext: SparkContext, sqlContext: SQLContext, esIndexType: String,  eventDate: String, inputRepartition: Int): Unit = {
 
-
     // Number partitions in Output
     val numRepartition = 5
-
-    log.info(s"Processing Published Single Person of Gigya as ElasticSearch index  ${eventDate}")
 
     val dataPublishedGigya = "/data/published/gfans/person/dt=" + eventDate
 
     val dataPublishedGigyaPath = dataPublishedGigya
-
 
     val persistCurltoEs = sqlContext.read.parquet(s"${dataPublishedGigyaPath}")
       .persist(newLevel = StorageLevel.MEMORY_AND_DISK_2)
 
     persistCurltoEs.printSchema()
 
-    // Save to Elastic Search work only in elasticsearch sql context
+    // Save to ElasticSearch only in elasticsearch sql context
+    // ElasticSearch Library functionality need to be cast asInstanceOf[org.elasticseach.spark.sql.SparkDataFrame]
     persistCurltoEs.repartition(numRepartition).saveToEs(esIndexType)
 
   }
