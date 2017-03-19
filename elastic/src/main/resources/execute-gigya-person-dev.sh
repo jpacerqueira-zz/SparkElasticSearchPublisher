@@ -32,11 +32,11 @@ hdfs dfs -rm -skipTrash -f /data/staged/gfans/person/dt=${DATE_HDFS}/*
 hdfs dfs -rm -skipTrash -f /data/published/gfans/person/dt=${DATE_HDFS}/*
 # 
 # submit from client to produce staged and publishing data
-spark-submit --class ${MAIN_CLASS1} --master ${MASTER_URL} --num-executors ${NUM_EXECUTORS} --driver-memory ${DRIVER_MEMORY} --executor-memory ${EXECUTOR_MEMORY} --executor-cores ${EXECUTOR_CORES} ${APP_JAR} ${DATE_STRING}
+spark-submit --class ${MAIN_CLASS1} --master ${MASTER_URL} --num-executors ${NUM_EXECUTORS} --driver-memory ${DRIVER_MEMORY} --executor-memory ${EXECUTOR_MEMORY} --executor-cores ${EXECUTOR_CORES} ${APP_JAR} --dthr ${DATE_STRING}
 
 
 # load ES mapping
 sudo bash -x dev-scv-person-mapping.sh ${DATE_STRING}
 
 # submit from client to build the daily ES index person 
-spark-submit --class ${MAIN_CLASS2} --master ${MASTER_URL} --num-executors ${NUM_EXECUTORS} --driver-memory ${DRIVER_MEMORY} --executor-memory ${EXECUTOR_MEMORY} --executor-cores ${EXECUTOR_CORES} ${APP_JAR} ${DATE_STRING}
+spark-submit --class ${MAIN_CLASS2} --master ${MASTER_URL} --num-executors ${NUM_EXECUTORS} --driver-memory ${DRIVER_MEMORY} --executor-memory ${EXECUTOR_MEMORY} --executor-cores ${EXECUTOR_CORES} ${APP_JAR} --dthr ${DATE_STRING}
