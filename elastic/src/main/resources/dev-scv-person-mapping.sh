@@ -4,7 +4,7 @@
 dt=$1
 index_prefix="dev-gfansview"
 es_type="person"
-es_node="localhost" #"localhost"
+es_node= "0.0.0.0" #"10.0.2.15" #"localhost"
 
 echo "create base http://"${es_node}":9200/${index_prefix}/ WARNING! Daily Indexes Deleted"
 echo "try curl -XDETELE http://"${es_node}":9200/${index_prefix}/"

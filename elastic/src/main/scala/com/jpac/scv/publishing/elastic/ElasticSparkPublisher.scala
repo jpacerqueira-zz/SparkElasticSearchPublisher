@@ -26,7 +26,7 @@ object ElasticSparkPublisher extends App {
       case _ => throw new IllegalArgumentException("Wrong input parameters")
     }
 
-    val esNodes = "localhost"
+    val esNodes = "0.0.0.0" // "10.0.2.15" // "localhost"
     val esIndexStage = "dev-"
     val esIndexName = "gfansview"
     val esType = "person"
