@@ -27,7 +27,7 @@
             <guava.version>16.0</guava.version>
             <snappy-java.version>1.0.5.4</snappy-java.version>
             <spark-avro.version>1.7.6</spark-avro.version>
-            <junit.version>4.12</junit.version>
+            <junit.version>4.13.1</junit.version>
             <hadoop-hdfs.version>2.6.0-cdh5.9.0</hadoop-hdfs.version>
             <hadoop-common.version>2.6.0-cdh5.9.0</hadoop-common.version>
             <spock.version>1.0-groovy-2.4</spock.version>
