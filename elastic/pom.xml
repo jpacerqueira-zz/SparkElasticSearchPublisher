@@ -15,7 +15,7 @@
             <spark-core.version>1.6.0-cdh5.9.0</spark-core.version>
             <spark-sql.version>1.6.0-cdh5.9.0</spark-sql.version>
             <scaling-args.version>0.15.0</scaling-args.version>
-            <elasticsearch-spark.version>2.4.4</elasticsearch-spark.version>
+            <elasticsearch-spark.version>6.8.13</elasticsearch-spark.version>
             <elasticsearch-hadoop>2.4.4</elasticsearch-hadoop>
             <joda-time.version>2.7</joda-time.version>
             <joda-convert.version>1.7</joda-convert.version>
