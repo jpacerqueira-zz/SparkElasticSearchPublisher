@@ -11,7 +11,7 @@
 
     <properties>
             <scala.version>2.10.6</scala.version>
-            <hadoop-client.version>2.6.0-cdh5.9.0</hadoop-client.version>
+            <hadoop-client.version>2.7.0</hadoop-client.version>
             <spark-core.version>1.6.0-cdh5.9.0</spark-core.version>
             <spark-sql.version>1.6.0-cdh5.9.0</spark-sql.version>
             <scaling-args.version>0.15.0</scaling-args.version>
